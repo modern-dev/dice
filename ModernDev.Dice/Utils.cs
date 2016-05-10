@@ -16,16 +16,16 @@ using System.Linq;
 namespace ModernDev.Dice
 {
     /// <summary>
-    /// TODO:
+    /// Provides utils methods.
     /// </summary>
     public static class Utils
     {
         /// <summary>
-        /// TODO:
+        /// Calculates checksum for credit card number using Luhn Algorithm.
         /// </summary>
-        /// <param name="num"></param>
-        /// <returns></returns>
-        public static int LuhnCalcualte(int num)
+        /// <param name="num">Credit card number.</param>
+        /// <returns>Returns a number representing credit card number checksum.</returns>
+        public static int LuhnCalcualte(long num)
         {
             var digits = num.ToString().ToCharArray().Reverse().Select(val => int.Parse(val.ToString())).ToList();
             var sum = 0;
@@ -51,11 +51,11 @@ namespace ModernDev.Dice
         }
 
         /// <summary>
-        /// TODO:
+        /// Checks whether the given credit card number is valid.
         /// </summary>
-        /// <param name="num"></param>
-        /// <returns></returns>
-        public static bool LuhnCheck(int num)
+        /// <param name="num">Credit card number.</param>
+        /// <returns>Returns "true" if credit card number is valid; False otherwise.</returns>
+        public static bool LuhnCheck(long num)
         {
             var str = num.ToString();
             var checkDigit = int.Parse(str.Substring(str.Length - 1));
@@ -64,22 +64,22 @@ namespace ModernDev.Dice
         }
 
         /// <summary>
-        /// TODO:
+        /// Pad a number with some string until it reaches a desired width.
         /// </summary>
-        /// <param name="num"></param>
-        /// <param name="width"></param>
-        /// <param name="pad"></param>
-        /// <returns></returns>
+        /// <param name="num">A number.</param>
+        /// <param name="width">Pad width.</param>
+        /// <param name="pad">Pad symbol.</param>
+        /// <returns>Returns string representation of a number padded with given symbols.</returns>
         public static string NumberPadding(int num, int width = 2, char pad = '0')
             => num.ToString().Length >= width
                 ? $"{num}"
                 : string.Join(pad.ToString(), new string[width - $"{num}".Length + 1]) + num;
 
         /// <summary>
-        /// TODO:
+        /// Converts <see cref="DateTime"/> object to Unix timestamp.
         /// </summary>
-        /// <param name="dateTime"></param>
-        /// <returns></returns>
+        /// <param name="dateTime"><see cref="DateTime"/> to convert.</param>
+        /// <returns>Returns Unix timestamp from given <see cref="DateTime"/> object.</returns>
         public static double DateTimeToUnixTimestamp(DateTime dateTime)
         {
             var unixStart = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
@@ -89,10 +89,10 @@ namespace ModernDev.Dice
         }
 
         /// <summary>
-        /// TODO:
+        /// Converts Unix timestamp to the <see cref="DateTime"/> object.
         /// </summary>
-        /// <param name="unixTime"></param>
-        /// <returns></returns>
+        /// <param name="unixTime">Unix timestamp.</param>
+        /// <returns>Returns Unix timestamp converted to the <see cref="DateTime"/> object.</returns>
         public static DateTime UnixTimestampToDateTime(double unixTime)
         {
             var unixStart = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
