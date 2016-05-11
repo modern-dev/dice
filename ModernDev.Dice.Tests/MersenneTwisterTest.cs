@@ -7,7 +7,7 @@
 // Copyright (c) 2016 Bohdan Shtepan
 // http://modern-dev.com/
 //
-// Licensed under the GPLv3 license.
+// Licensed under the MIT license.
 //
 
 using NUnit.Framework;
