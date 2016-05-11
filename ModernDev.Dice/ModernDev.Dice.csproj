@@ -38,7 +38,12 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Extra\AgeRanges.cs" />
+    <Compile Include="Extra\CasingRules.cs" />
+    <Compile Include="Extra\ColorFormats.cs" />
+    <Compile Include="Dice.cs" />
+    <Compile Include="Extra\Dice.Data.cs" />
+    <Compile Include="Extra\Extensions.cs" />
     <Compile Include="MersenneTwister.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils.cs" />
