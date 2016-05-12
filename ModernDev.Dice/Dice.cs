@@ -96,7 +96,7 @@ namespace ModernDev.Dice
         /// <param name="max">Max value.</param>
         /// <exception cref="ArgumentException">Thrown when <c>min</c> is greater than <c>max</c>.</exception>
         /// <returns>Returns a random integer.</returns>
-        public int NextInt(int min = int.MinValue, int max = int.MaxValue)
+        public int NextInt(int min = int.MinValue + 1, int max = int.MaxValue - 1)
         {
             if (min > max)
             {
@@ -113,7 +113,7 @@ namespace ModernDev.Dice
         /// <param name="max">Max value.</param>
         /// <exception cref="ArgumentException">Thrown when <c>min</c> is greater than <c>max</c>.</exception>
         /// <returns>Returns a random long.</returns>
-        public long NextLong(long min = long.MinValue, long max = long.MaxValue)
+        public long NextLong(long min = long.MinValue + 1, long max = long.MaxValue - 1)
         {
             if (min > max)
             {
@@ -130,7 +130,7 @@ namespace ModernDev.Dice
         /// <param name="max">Max value.</param>
         /// <exception cref="ArgumentException">Thrown when <c>min</c> is less than 0.</exception>
         /// <returns>Returns a random natural integer.</returns>
-        public int NextNatural(int min = 0, int max = int.MaxValue)
+        public int NextNatural(int min = 0, int max = int.MaxValue - 1)
         {
             if (min < 0)
             {
@@ -152,6 +152,11 @@ namespace ModernDev.Dice
         {
             const string s = "!@#$%^&*()[]";
             string letters, p;
+
+            if (alpha && symbols)
+            {
+                throw new ArgumentException("Cannot specify both alpha and symbols.");
+            }
 
             if (casing == CasingRules.LowerCase)
             {
@@ -187,13 +192,13 @@ namespace ModernDev.Dice
         }
 
         /// <summary>
-        /// 
+        /// Returns a random double.
         /// </summary>
-        /// <param name="min"></param>
-        /// <param name="max"></param>
-        /// <param name="decimals"></param>
-        /// <returns></returns>
-        public double NextDouble(double min = double.MinValue, double max = double.MaxValue, uint decimals = 4)
+        /// <param name="min">Min value.</param>
+        /// <param name="max">Max value.</param>
+        /// <param name="decimals">Decimals count.</param>
+        /// <returns>Returns random generated double.</returns>
+        public double NextDouble(double min = double.MinValue + 1.0, double max = double.MaxValue - 1.0, uint decimals = 4)
         {
             var _fixed = Math.Pow(10, decimals);
             var num = NextLong((int) (min*_fixed), (int) (max*_fixed));
@@ -206,17 +211,23 @@ namespace ModernDev.Dice
         /// Returns a random string.
         /// </summary>
         /// <param name="length">The length of the string.</param>
-        /// <param name="args">Arguments that will be passed to the <see cref="NextChar"/> method.</param>
+        /// <param name="pool">Characters pool</param>
+        /// <param name="alpha">Set to True to use only an alphanumeric character.</param>
+        /// <param name="symbols">Set to true to return only symbols.</param>
+        /// <param name="casing">Default casing.</param>
         /// <exception cref="ArgumentException">Thrown when <c>length</c> is less than 0.</exception>
         /// <returns>Returns a random string.</returns>
-        public string NextString(int length = 10, params object[] args)
+        public string NextString(int length = 10, string pool = null, bool alpha = false, bool symbols = false,
+            CasingRules casing = CasingRules.MixedCase)
         {
             if (length < 0)
             {
                 throw new ArgumentException("Length cannot be less than zero.", nameof(length));
             }
 
-            return string.Join("", NextList<string>(new Func<string, bool, bool, CasingRules, char>(NextChar), length, args));
+            return string.Join("",
+                NextList<char>(new Func<string, bool, bool, CasingRules, char>(NextChar), length, pool, alpha, symbols,
+                    casing));
         }
 
         /// <summary>
@@ -296,6 +307,11 @@ namespace ModernDev.Dice
         /// <returns>Returns shuffled list.</returns>
         public List<T> ShuffleList<T>(List<T> list)
         {
+            if (list == null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
             var oldList = list.ToList();
             var newList = new List<T>();
             var len = oldList.Count;
@@ -369,69 +385,6 @@ namespace ModernDev.Dice
             return count == 1 ? new List<T>(new[] {PickRandomItem(list)}) : ShuffleList(list).Take(count).ToList();
         }
 
-        /// <summary>
-        /// Returns a single item from a list with relative weighting of odds.
-        /// </summary>
-        /// <typeparam name="T">The type of the list.</typeparam>
-        /// <param name="list">A list of items.</param>
-        /// <param name="weights">A list of items specifying the relative weights.</param>
-        /// <param name="trim">True, to trim the list.</param>
-        /// <exception cref="ArgumentException">Thrown when lists counts is not the same.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when the sum of all the items in <c>weights</c> list is 0.</exception>
-        /// <returns>Returns the item from the list that obeying the specified weight.</returns>
-        public T Weighted<T>(List<T> list, List<int> weights, bool trim = false)
-        {
-            if (list.Count != weights.Count)
-            {
-                throw new ArgumentException("Length of list and weights must match.");
-            }
-
-            var sum = weights.Where(val => val > 0).Sum();
-
-            if (sum == 0)
-            {
-                throw new InvalidOperationException("No valid entries in array weights.");
-            }
-
-            var selected = _random()*sum;
-
-            int total = 0, lastGoodIndx = -1, chosenIndx = -1;
-
-            for (var wi = 0; wi < weights.Count; ++wi)
-            {
-                var val = weights[wi];
-
-                total += val;
-
-                if (val > 0)
-                {
-                    if (selected <= total)
-                    {
-                        chosenIndx = wi;
-
-                        break;
-                    }
-
-                    lastGoodIndx = wi;
-                }
-
-                if (wi == weights.Count - 1)
-                {
-                    chosenIndx = lastGoodIndx;
-                }
-            }
-
-            var chosen = list[chosenIndx];
-
-            if (trim)
-            {
-                list.RemoveAt(chosenIndx);
-                weights.RemoveAt(chosenIndx);
-            }
-
-            return chosen;
-        }
-
         #endregion
 
         #region Text
@@ -456,7 +409,7 @@ namespace ModernDev.Dice
             var text = string.Join(" ",
                 NextList<string>(new Func<bool, int?, int?, string>(NextWord), wordsCount, false, 2, null)).Capitalize();
 
-            if (punctuation && !new Regex(@"/^[\.\?;!:]$/", RegexOptions.IgnoreCase).IsMatch(text))
+            if (punctuation && !new Regex(@"^[\.\?;!:]$", RegexOptions.IgnoreCase).IsMatch(text))
             {
                 punct = ".";
             }
@@ -478,7 +431,7 @@ namespace ModernDev.Dice
         /// <returns>Returns random generated word.</returns>
         public string NextWord(bool capitalize = false, int? syllablesCount = 2, int? length = null)
         {
-            if (syllablesCount.HasValue && length.HasValue)
+            if (syllablesCount != null && length != null)
             {
                 throw new ArgumentException("Cannot specify both syllablesCount AND length.");
             }
@@ -529,7 +482,7 @@ namespace ModernDev.Dice
                 if (i == 0)
                 {
                     chr = NextChar(all);
-                } else if (consonats[chr] == -1)
+                } else if (consonats.IndexOf((char) chr) == -1) //(consonats[chr] == -1)
                 {
                     chr = NextChar(consonats);
                 }
@@ -617,37 +570,6 @@ namespace ModernDev.Dice
         }
 
         /// <summary>
-        /// Generates a random Brazilian company Id.
-        /// </summary>
-        /// <returns>Returns random generated Brazilian company Id.</returns>
-        public string NextCNPJ()
-        {
-            var n = NextList<int>(new Func<int, int, int>(NextNatural), 12, 0, 12);
-            var d1 = n[11]*2 + n[10]*3 + n[9]*4 + n[8]*5 + n[7]*6 + n[6]*7 + n[5]*8 + n[4]*9 + n[3]*2 + n[2]*3 + n[1]*4 +
-                     n[0]*5;
-
-            d1 = 11 - (d1%11);
-
-            if (d1 < 2)
-            {
-                d1 = 0;
-            }
-
-            var d2 = d1*2 + n[11]*3 + n[10]*4 + n[9]*5 + n[8]*6 + n[7]*7 + n[6]*8 + n[5]*9 + n[4]*2 + n[3]*3 + n[2]*4 +
-                     n[1]*5 + n[0]*6;
-
-            d2 = 11 - (d2%11);
-
-            if (d2 < 2)
-            {
-                d2 = 0;
-            }
-
-            return "" + n[0] + n[1] + '.' + n[2] + n[3] + n[4] + '.' + n[5] + n[6] + n[7] + '/' + n[8] + n[9] + n[10] +
-                   n[11] + '-' + d1 + d2;
-        }
-
-        /// <summary>
         /// Generates a random first name.
         /// </summary>
         /// <param name="isFemale">True to generate female names.</param>
@@ -675,7 +597,7 @@ namespace ModernDev.Dice
         /// <param name="middleInitial">True to use middle initial.</param>
         /// <param name="prefix">True to use name prefixes.</param>
         /// <param name="suffix">True to use name suffixes.</param>
-        /// <param name="isFull">True to use full name preffixes.</param>
+        /// <param name="isFull">True to use full name prefixes.</param>
         /// <param name="gender">Male of Female.</param>
         /// <returns>Returns random generated name.</returns>
         public string NextName(bool isMale = false, bool middle = false, bool middleInitial = false, bool prefix = false,
@@ -716,19 +638,19 @@ namespace ModernDev.Dice
         /// <param name="ssnFour">True to generate last 4 digits.</param>
         /// <param name="dashes">False to remove dashes.</param>
         /// <returns>Returns random generated social security number.</returns>
-        public string NextSSN(bool ssnFour = false, bool dashes = false)
+        public string NextSSN(bool ssnFour = false, bool dashes = true)
         {
             const string ssnPool = "1234567890";
             string ssn, dash = dashes ? "-" : "";
 
             if (!ssnFour)
             {
-                ssn = NextString(3, ssnPool, false, false, CasingRules.MixedCase) + dash + NextString(2, ssnPool, false, false, CasingRules.MixedCase) +
-                      dash + NextString(4, ssnPool, false, false, CasingRules.MixedCase);
+                ssn = NextString(3, ssnPool) + dash + NextString(2, ssnPool) +
+                      dash + NextString(4, ssnPool);
             }
             else
             {
-                ssn = NextString(4, ssnPool, false, false, CasingRules.MixedCase);
+                ssn = NextString(4, ssnPool);
             }
 
             return ssn;
@@ -790,20 +712,20 @@ namespace ModernDev.Dice
         /// <returns>Returns a random GCM registration ID.</returns>
         public string NextAndroidId()
             => "APA91" +
-               NextString(178, "0123456789abcefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_", false, false, CasingRules.MixedCase);
+               NextString(178, "0123456789abcefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_");
 
         /// <summary>
         /// Returns a random Apple Push Token.
         /// </summary>
         /// <returns>Returns a random Apple Push Token.</returns>
-        public string NextApplePushToken() => NextString(64, "abcdef1234567890", false, false, CasingRules.MixedCase);
+        public string NextApplePushToken() => NextString(64, "abcdef1234567890");
 
         /// <summary>
         /// Returns a random Windows Phone 7 ANID.
         /// </summary>
         /// <returns>Returns a random Windows Phone 7 ANID.</returns>
         public string NextWP7ANID()
-            => "A=" + new Regex(@"/-/g", RegexOptions.Multiline).Replace(NextGUID(), string.Empty).ToUpperInvariant() +
+            => "A=" + new Regex(@"-", RegexOptions.Multiline).Replace(NextGUID(), string.Empty).ToUpperInvariant() +
                "&E=" + NextHash(3) + "&W=" + NextInt(0, 9);
 
         /// <summary>
@@ -819,9 +741,15 @@ namespace ModernDev.Dice
         /// <summary>
         /// Returns a random domain with a random Top Level Domain.
         /// </summary>
-        /// <param name="domain">Custom Top Level Domain.</param>
+        /// <param name="tld">Custom Top Level Domain.</param>
         /// <returns>Returns random generated domain name.</returns>
-        public string NextDomainName(string domain = null) => NextWord() + "." + (domain ?? PickRandomItem(Tlds));
+        public string NextDomainName(string tld = null) => NextWord() + "." + (tld ?? NextTopLevelDomain());
+
+        /// <summary>
+        /// Returns a random Top Level Domain.
+        /// </summary>
+        /// <returns>Returns a random Top Level Domain.</returns>
+        public string NextTopLevelDomain() => PickRandomItem(Tlds);
 
         /// <summary>
         /// Returns a random email with a random domain.
@@ -830,7 +758,7 @@ namespace ModernDev.Dice
         /// <param name="length">Length of an email address.</param>
         /// <returns>Returns a random email with a random domain.</returns>
         public string NextEmail(string domain = null, int length = 7)
-            => NextWord(length: length) + "@" + (domain ?? NextDomainName());
+            => NextWord(length: length, syllablesCount: null) + "@" + (domain ?? NextDomainName());
 
         /// <summary>
         /// Returns a random Google Analytics tracking code.
@@ -916,7 +844,7 @@ namespace ModernDev.Dice
             switch (format)
             {
                 case ColorFormats.ShortHex:
-                    cv = hex(1, 2, true, grayscale);
+                    cv = hex(1, 3, true, grayscale);
                     break;
 
                 case ColorFormats.RGB:
@@ -980,7 +908,7 @@ namespace ModernDev.Dice
         /// <param name="shortSuffix">True to use short suffix.</param>
         /// <returns>Returns random generated street name.</returns>
         public string NextStreet(int syllables = 2, bool shortSuffix = true)
-            => NextWord(syllablesCount: syllables).Capitalize() + (shortSuffix
+            => NextWord(syllablesCount: syllables).Capitalize() + " " + (shortSuffix
                 ? StreetSuffix().Key
                 : StreetSuffix().Value);
 
@@ -1025,7 +953,7 @@ namespace ModernDev.Dice
         /// <param name="length">Length of geohash.</param>
         /// <returns>Returns random generated geohash.</returns>
         public string NextGeohash(int length = 7)
-            => NextString(length, "0123456789bcdefghjkmnpqrstuvwxyz", false, false, CasingRules.MixedCase);
+            => NextString(length, "0123456789bcdefghjkmnpqrstuvwxyz");
 
         /// <summary>
         /// Returns a random country.
@@ -1137,7 +1065,7 @@ namespace ModernDev.Dice
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <c>max</c> is greater than 12 in 12-hours format.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <c>min</c> is greater than <c>max</c>.</exception>
         /// <returns>Returns random generated hour.</returns>
-        public int NextHour(bool twentyfourHours = true, int min = 0, int max = 23)
+        public int NextHour(bool twentyfourHours = true, int? min = null, int? max = null)
         {
             if (min < 0)
             {
@@ -1159,7 +1087,10 @@ namespace ModernDev.Dice
                 throw new ArgumentOutOfRangeException(nameof(min), "min cannot be greater than max.");
             }
 
-            return NextNatural(twentyfourHours ? 0 : 1, twentyfourHours ? 23 : 12);
+            min = min ?? (twentyfourHours ? 0 : 1);
+            max = max ?? (twentyfourHours ? 23 : 12);
+
+            return NextNatural(min.Value, max.Value);
         }
 
         /// <summary>
@@ -1178,13 +1109,13 @@ namespace ModernDev.Dice
         {
             if (min.HasValue && max.HasValue)
             {
-                return Utils.UnixTimestampToDateTime(NextNatural((int) Utils.DateTimeToUnixTimestamp(min.Value),
-                    (int) Utils.DateTimeToUnixTimestamp(max.Value)));
+                return Utils.UnixTimestampToDateTime(NextLong((long) Utils.DateTimeToUnixTimestamp(min.Value),
+                    (long) Utils.DateTimeToUnixTimestamp(max.Value)));
             }
 
             var m = NextNatural(1, 12);
 
-            return new DateTime(NextYear(), m, NextNatural(1, Months[m].Item4), NextHour(), NextMinute(),
+            return new DateTime(NextYear(), m, NextNatural(1, Months[m - 1].Item4), NextHour(), NextMinute(),
                 NextSecond(), NextMillisecond());
         }
 
@@ -1269,13 +1200,13 @@ namespace ModernDev.Dice
         {
             const string guidPool = "abcdef1234567890";
             const string variantPool = "ab89";
-            Func<string, int, string> strFn = (pool, len) => NextString(len, pool, false, false, CasingRules.MixedCase);
+            Func<string, int, string> strFn = (pool, len) => NextString(len, pool);
 
             return strFn(guidPool, 8) + "-" +
                    strFn(guidPool, 4) + "-" +
                    version +
-                   strFn(variantPool, 3) + "-" +
-                   strFn(guidPool, 1) + "-" +
+                   strFn(guidPool, 3) + "-" +
+                   strFn(variantPool, 1) +
                    strFn(guidPool, 3) + "-" +
                    strFn(guidPool, 12);
         }
@@ -1290,7 +1221,7 @@ namespace ModernDev.Dice
         {
             var pool = casing == CasingRules.UpperCase ? HexPool.ToUpperInvariant() : HexPool;
 
-            return NextString(length, pool, false, false, CasingRules.MixedCase);
+            return NextString(length, pool);
         }
 
         #endregion

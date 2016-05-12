@@ -27,12 +27,12 @@ namespace ModernDev.Dice
         /// <returns>Returns a number representing credit card number checksum.</returns>
         public static int LuhnCalcualte(long num)
         {
-            var digits = num.ToString().ToCharArray().Reverse().Select(val => int.Parse(val.ToString())).ToList();
+            var digits = num.ToString().ToCharArray().Reverse().ToList();
             var sum = 0;
 
             for (int i = 0, l = digits.Count; l > i; ++i)
             {
-                var digit = digits[i];
+                var digit = int.Parse(digits[i].ToString());
 
                 if (i % 2 == 0)
                 {
@@ -58,9 +58,9 @@ namespace ModernDev.Dice
         public static bool LuhnCheck(long num)
         {
             var str = num.ToString();
-            var checkDigit = int.Parse(str.Substring(str.Length - 1));
+            var checkDigit = int.Parse(str[str.Length - 1].ToString());
             
-            return checkDigit == LuhnCalcualte(int.Parse(str.Substring(0, str.Length - 1)));
+            return checkDigit == LuhnCalcualte(long.Parse(str.Substring(0, str.Length - 1)));
         }
 
         /// <summary>
