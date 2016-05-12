@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Dice</id>
+    <version>1.0.0</version>
+    <title>Dice</title>
+    <authors>Bohdan Shtepan</authors>
+    <owners>Bohdan Shtepan</owners>
+    <licenseUrl>https://github.com/modern-dev/dice/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/modern-dev/dice</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Dice - is a fake data generator for .Net.</description>
+    <copyright>Copyright 2016 Bohdan Shtepan</copyright>
+    <tags>dice random data generator casual chance mersenne twister</tags>
+	
+  </metadata>
+  <files>
+    <file src="ModernDev.Dice\bin\Release\ModernDev.Dice.dll" target="lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1" />
+  </files>
+
+</package>
