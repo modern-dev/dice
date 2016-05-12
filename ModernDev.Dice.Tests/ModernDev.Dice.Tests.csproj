@@ -53,6 +53,7 @@
     <Compile Include="DateTimeTest.cs" />
     <Compile Include="DiceTest.cs" />
     <Compile Include="Ex.cs" />
+    <Compile Include="LocationTest.cs" />
     <Compile Include="MersenneTwisterTest.cs" />
     <Compile Include="MobileTest.cs" />
     <Compile Include="PersonTest.cs" />
