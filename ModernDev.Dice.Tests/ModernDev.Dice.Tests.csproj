@@ -55,6 +55,7 @@
     <Compile Include="Ex.cs" />
     <Compile Include="LocationTest.cs" />
     <Compile Include="MersenneTwisterTest.cs" />
+    <Compile Include="MiscTest.cs" />
     <Compile Include="MobileTest.cs" />
     <Compile Include="PersonTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
