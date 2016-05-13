@@ -37,7 +37,7 @@ namespace ModernDev.Dice.Tests
             That(NumberPadding(123, 5, 'x'), EqualTo("xx123"));
         }
 
-        [Test]
+        /*[Test]
         public void DateTimeConverters()
         {
             var dt = new DateTime(1992, 2, 9, 12, 30, 30);
@@ -50,6 +50,6 @@ namespace ModernDev.Dice.Tests
             That(dt2.Year, EqualTo(dt.Year));
             That(dt2.Month, EqualTo(dt.Month));
             That(dt2.Day, EqualTo(dt.Day));
-        }
+        }*/
     }
 }
