@@ -25,7 +25,7 @@ deploy:
 
 after_build:
   - nuget pack ModernDev.Dice.nuspec -version %APPVEYOR_BUILD_VERSION%
-  - appveyor PushArtifact Dice.%APPVEYOR_BUILD_VERSION%.nupkg
+  - appveyor PushArtifact ModernDev.Dice.%APPVEYOR_BUILD_VERSION%.nupkg
 
 notifications:
 - provider: Webhook
