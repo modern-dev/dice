@@ -27,6 +27,10 @@ after_build:
   - nuget pack ModernDev.Dice.nuspec -version %APPVEYOR_BUILD_VERSION%
   - appveyor PushArtifact ModernDev.Dice.%APPVEYOR_BUILD_VERSION%.nupkg
 
+pull_requests:
+  do_not_increment_build_number: true
+skip_non_tags: true
+
 notifications:
 - provider: Webhook
   url: https://webhooks.gitter.im/e/fa03538b00d66941afee
