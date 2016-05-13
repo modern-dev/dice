@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Dice</id>
+    <id>ModernDev.Dice</id>
     <version>1.0.0</version>
-    <title>Dice</title>
+    <title>ModernDev.Dice</title>
     <authors>Bohdan Shtepan</authors>
     <owners>Bohdan Shtepan</owners>
     <licenseUrl>https://github.com/modern-dev/dice/blob/master/LICENSE</licenseUrl>
