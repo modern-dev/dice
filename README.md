@@ -110,7 +110,7 @@ dice.NextHash(length: 40);                          // "25ac28d4559ca6a31a029df9
 
 ### Embedded utils methods
 
-#### List&lt;T&gt; NextList&lt;T&gt;(Delegate generator, int count = 1, params object[] args)
+##### NextList
 
 Returns a list of n random terms using given generator function.
 
@@ -119,7 +119,7 @@ var generator = new Func<string>(methodThatReturnsString);
 var randomList = dice.NextList<string>(generator, 10);
 ```
 
-#### List&lt;T&gt; GenerateUniqueList&lt;T&gt;(Delegate generator, int count = 1, Func&lt;List&lt;T&gt;, T, bool&gt; comparator = null, params object[] args)
+##### GenerateUniqueList
 
 Given a function that generates something random and a number of items to generate.
 
@@ -128,7 +128,7 @@ var generator = new Func<int>(dice.NextNatural);
 var listOfUniqueNumbers = dice.GenerateUniqueList<int>(generator, 10, 0, 1000);
 ```
 
-#### List&lt;T&gt; ShuffleList&lt;T&gt;(List&lt;T&gt; list)
+##### ShuffleList
 
 Given a list, scramble the order and return it.
 
@@ -136,7 +136,7 @@ Given a list, scramble the order and return it.
 var shuffledList = dice.ShuffleList(new List<int> {1, 2, 3, 4, 5});
 ```
 
-#### T PickRandomItem&lt;T&gt;(List&lt;T&gt; list)
+##### PickRandomItem
 
 Given a list, returns a single random element.
 
@@ -144,7 +144,7 @@ Given a list, returns a single random element.
 int randomItem = dice.PickRandomItem(new List<int> {1, 2, 3, 4, ,5 , 6, 7, 8, 9});
 ```
 
-#### List&lt;T&gt; PickRandomSet&lt;T&gt;(List&lt;T&gt; list, int count = 2)
+##### PickRandomSet
 
 Given a list, returns a random set with **count** elements.
 
@@ -156,7 +156,7 @@ List<int> randomSet = dice.PickRandomSet(new List<int> {1, 2, 3, 4, ,5 , 6, 7, 8
 
 All the helpers methods belongs to the `Utils` static class.
 
-#### LuhnCalcualte
+##### LuhnCalcualte
 
 Calculates checksum for credit card number using [:link:Luhn Algorithm](https://en.wikipedia.org/wiki/Luhn_algorithm).
 
@@ -164,7 +164,7 @@ Calculates checksum for credit card number using [:link:Luhn Algorithm](https://
 int cheksum = Utils.LuhnCalcualte(6304038511073827);
 ```
 
-#### LuhnCheck
+##### LuhnCheck
 
 Checks whether the given credit card number is valid.
 
@@ -172,7 +172,7 @@ Checks whether the given credit card number is valid.
 bool isValid = Utils.LuhnCheck(6304038511073827);
 ```
 
-#### NumberPadding
+##### NumberPadding
 
 Pad a number with some string until it reaches a desired width.
 
@@ -180,7 +180,7 @@ Pad a number with some string until it reaches a desired width.
 Assert.That(Utils.NumberPadding(45, 5, 'x'), Is.EqualTo("xxx45"));
 ```
 
-#### DateTimeToUnixTimestamp
+##### DateTimeToUnixTimestamp
 
 Converts `DateTime` object to Unix timestamp.
 
@@ -188,7 +188,7 @@ Converts `DateTime` object to Unix timestamp.
 long timestamp = Utils.DateTimeToUnixTimestamp(new DateTime(2016, 1, 1);
 ```
 
-#### UnixTimestampToDateTime
+##### UnixTimestampToDateTime
 
 Converts Unix timestamp to the `DateTime` object.
 
