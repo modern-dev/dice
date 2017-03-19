@@ -219,7 +219,7 @@ The icon was taken from [here](http://findicons.com/pack/2200/dices).
 
 [Licensed under the MIT license.](https://github.com/virtyaluk/InTouch/blob/master/LICENSE)
 
-Copyright (c) 2016 Bohdan Shtepan
+Copyright (c) 2017 Bohdan Shtepan
 
 ---
 

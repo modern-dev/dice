@@ -12,10 +12,16 @@
     <description>Dice - is a fake data generator for .Net.</description>
     <copyright>Copyright 2016 Bohdan Shtepan</copyright>
     <tags>dice random data generator casual chance mersenne twister</tags>
-	
+	<dependencies>
+			<group targetFramework="netstandard1.0">
+				<dependency id="NETStandard.Library" version="1.6.1" />
+				<dependency id="Microsoft.NETCore.Portable.Compatibility" version="1.0.1" />
+			</group>
+        </dependencies>
   </metadata>
   <files>
-    <file src="ModernDev.Dice\bin\Release\ModernDev.Dice.dll" target="lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1" />
+    <file src="ModernDev.Dice\bin\Release\ModernDev.Dice.dll" target="lib\netstandard1.0\ModernDev.Dice.dll" />
+	<file src="ModernDev.Dice\bin\Release\ModernDev.Dice.XML" target="lib\netstandard1.0\ModernDev.Dice.XML" />
   </files>
 
 </package>
